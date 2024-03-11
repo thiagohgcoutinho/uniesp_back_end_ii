@@ -17,9 +17,9 @@ public class App {
 
             System.out.print("Digite a primeira nota: ");
             int nota1 = scanner.nextInt();
-            System.out.printf("Digite a segunda nota: ");
+            System.out.print("Digite a segunda nota: ");
             int nota2 = scanner.nextInt();
-            System.out.printf("Digite a terceira nota: ");
+            System.out.print("Digite a terceira nota: ");
             int nota3 = scanner.nextInt();
             scanner.nextLine();
 
