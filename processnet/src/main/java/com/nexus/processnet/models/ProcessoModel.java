@@ -1,7 +1,8 @@
-package com.nexus.processnet.model;
+package com.nexus.processnet.models;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -23,9 +24,14 @@ public class ProcessoModel {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataCriacao;
 
-    @Column(nullable = false, unique = true, length = 14)
+    @Column(nullable = false, length = 14)
+    @Pattern(regexp = "\\d{14}", message = "O CNPJ deve conter apenas números.")
     private String cnpj;
 
     @Column(nullable = false, length = 250)
     private String endereco;
+
+    @ManyToOne
+    @JoinColumn(name = "idResponsavel", referencedColumnName = "idPessoa")
+    private UsuarioModel responsavel;
 }

@@ -1,8 +1,7 @@
-package com.nexus.processnet.model;
+package com.nexus.processnet.models;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,11 +10,24 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "TB_FUNCIONARIO")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class FuncionarioModel extends PessoaModel{
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Cargo cargo;
+
+    @Id
+    @JoinColumn
+    @Override
+    public Long getIdPessoa() {
+        return super.getIdPessoa();
+    }
+
+    @Override
+    public void setIdPessoa(Long id) {
+        super.setIdPessoa(id);
+    }
+
+
 }

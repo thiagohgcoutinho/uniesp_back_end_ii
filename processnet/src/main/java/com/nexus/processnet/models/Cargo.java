@@ -1,4 +1,4 @@
-package com.nexus.processnet.model;
+package com.nexus.processnet.models;
 
 public enum Cargo {
 
