@@ -24,6 +24,10 @@ public class ProcessoModel {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataCriacao;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoProcesso tipoProcesso;
+
     @Column(nullable = false, length = 14)
     @Pattern(regexp = "\\d{14}", message = "O CNPJ deve conter apenas números.")
     private String cnpj;
@@ -34,4 +38,12 @@ public class ProcessoModel {
     @ManyToOne
     @JoinColumn(name = "idResponsavel", referencedColumnName = "idPessoa")
     private UsuarioModel responsavel;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status = Status.AGUARDANDO;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Parecer parecer = Parecer.AGUARDANDO;
 }
