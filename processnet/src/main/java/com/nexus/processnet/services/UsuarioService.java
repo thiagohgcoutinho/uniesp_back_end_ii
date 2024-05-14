@@ -19,14 +19,14 @@ public class UsuarioService extends PessoaService<UsuarioModel> {
     }
 
     @Transactional
-    public void delete(Long id) {
-        UsuarioModel usuario = pessoaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada com ID: " + id));
+    public void delete(Long idPessoa) {
+        UsuarioModel usuario = pessoaRepository.findById(idPessoa)
+                .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada com ID: " + idPessoa));
 
-        if (processoRepository.existsByIdResponsavel(id)) {
+        if (processoRepository.existsByResponsavel_IdPessoa(idPessoa)) {
             throw new IllegalStateException("Não é possível excluir usuário com processos associados.");
         }
 
-        pessoaRepository.deleteById(id);
+        pessoaRepository.deleteById(idPessoa);
     }
 }

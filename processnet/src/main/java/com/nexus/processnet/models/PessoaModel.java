@@ -17,7 +17,8 @@ import lombok.NoArgsConstructor;
 public abstract class PessoaModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pessoa_generator")
+    @SequenceGenerator(name = "pessoa_generator", sequenceName = "pessoa_seq", allocationSize = 1)
     private Long idPessoa;
 
     @Column(nullable = false, unique = true, length = 30)

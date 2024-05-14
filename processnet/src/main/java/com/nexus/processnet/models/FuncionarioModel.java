@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "TB_FUNCIONARIO")
+@PrimaryKeyJoinColumn(name = "idPessoa")
 @Data
 @NoArgsConstructor
 public class FuncionarioModel extends PessoaModel{
@@ -16,18 +17,5 @@ public class FuncionarioModel extends PessoaModel{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Cargo cargo;
-
-    @Id
-    @JoinColumn
-    @Override
-    public Long getIdPessoa() {
-        return super.getIdPessoa();
-    }
-
-    @Override
-    public void setIdPessoa(Long id) {
-        super.setIdPessoa(id);
-    }
-
 
 }

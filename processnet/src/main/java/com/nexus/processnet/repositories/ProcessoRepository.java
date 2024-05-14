@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProcessoRepository extends JpaRepository<ProcessoModel, Long> {
-    boolean existsByIdResponsavel(Long idUsuario);
+    boolean existsByResponsavel_IdPessoa(Long idPessoa);
 }
