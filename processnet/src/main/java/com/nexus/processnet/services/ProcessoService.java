@@ -65,4 +65,15 @@ public class ProcessoService {
             processoRepository.save(processo);
         }
     }
+
+    @Transactional
+    public List<ProcessoModel> findAll() {
+        return processoRepository.findAll();
+    }
+
+    @Transactional
+    public ProcessoModel findById(Long id) {
+        return processoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Processo não encontrado com ID: " + id));
+    }
 }

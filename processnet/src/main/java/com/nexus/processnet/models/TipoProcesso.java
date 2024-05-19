@@ -1,7 +1,20 @@
 package com.nexus.processnet.models;
 
-public enum TipoProcesso {
+import com.fasterxml.jackson.annotation.JsonValue;
 
-    VISTORIA,
-    ANALISE
+public enum TipoProcesso {
+    VISTORIA("Vistoria"),
+    ANALISE("Análise");
+
+    private final String descricao;
+
+    TipoProcesso(String descricao) {
+        this.descricao = descricao;
+    }
+
+    @JsonValue
+    public String getDescricao() {
+        return descricao;
+    }
 }
+

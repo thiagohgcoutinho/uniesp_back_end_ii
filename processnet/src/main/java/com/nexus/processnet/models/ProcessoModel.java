@@ -46,4 +46,5 @@ public class ProcessoModel {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Parecer parecer = Parecer.AGUARDANDO;
+
 }
