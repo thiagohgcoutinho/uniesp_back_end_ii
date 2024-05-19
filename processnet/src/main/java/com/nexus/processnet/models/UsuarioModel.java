@@ -19,6 +19,4 @@ public class UsuarioModel extends PessoaModel{
     public UsuarioModel() {
         super();
     }
-
-
 }
