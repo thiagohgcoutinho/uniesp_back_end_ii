@@ -1,25 +1,38 @@
 package com.nexus.processnet.services;
 
-
 import com.nexus.processnet.models.*;
 import com.nexus.processnet.repositories.ProcessoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 public class ProcessoService {
 
-
     @Autowired
     private ProcessoRepository processoRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @Transactional
-    public ProcessoModel create(ProcessoModel novoProcesso, UsuarioModel usuario) {
+    public ProcessoModel create(ProcessoModel novoProcesso) {
+        UsuarioModel usuario = usuarioService.findById(novoProcesso.getResponsavel().getIdPessoa());
         novoProcesso.setResponsavel(usuario);
+        novoProcesso.setNumeroProtocolo(generateNumeroProtocolo());
+        novoProcesso.setDataCriacao(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         return processoRepository.save(novoProcesso);
+    }
+
+    private String generateNumeroProtocolo() {
+        long count = processoRepository.count();
+        int nextNumber = (int) (count + 1);
+        int year = LocalDate.now().getYear();
+        return String.format("%03d%d", nextNumber, year);
     }
 
     @Transactional
@@ -31,7 +44,6 @@ public class ProcessoService {
     public List<ProcessoModel> findByTipoProcesso(TipoProcesso tipo) {
         return processoRepository.findByTipoProcesso(tipo);
     }
-
 
     @Transactional
     public List<ProcessoModel> findByStatus(Status status) {

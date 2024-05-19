@@ -1,9 +1,10 @@
 package com.nexus.processnet.controllers;
 
+import com.nexus.processnet.models.LoginModel;
 import com.nexus.processnet.models.UsuarioModel;
+import com.nexus.processnet.services.LoginService;
 import com.nexus.processnet.services.UsuarioService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,41 +12,51 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Data
 @RequestMapping("/usuarios")
-@Api(value = "Usuários", tags = "Usuários")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private LoginService loginService;
+
     @GetMapping
-    @ApiOperation(value = "Obter todos os usuários", response = List.class)
     public ResponseEntity<List<UsuarioModel>> getAllUsuarios() {
         return ResponseEntity.ok(usuarioService.findAll());
     }
 
     @GetMapping("/{id}")
-    @ApiOperation(value = "Obter usuário por ID", response = UsuarioModel.class)
     public ResponseEntity<UsuarioModel> getUsuarioById(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.findById(id));
     }
 
     @PostMapping
-    @ApiOperation(value = "Criar um novo usuário", response = UsuarioModel.class)
     public ResponseEntity<UsuarioModel> createUsuario(@RequestBody UsuarioModel usuario) {
         return ResponseEntity.ok(usuarioService.create(usuario));
     }
 
+    @PostMapping("/authenticate")
+    public ResponseEntity<String> authenticateUsuario(@RequestBody LoginModel loginRequest) {
+        try {
+            String result = loginService.authenticateUsuario(loginRequest.getCpf(), loginRequest.getSenha());
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}")
-    @ApiOperation(value = "Atualizar um usuário", response = UsuarioModel.class)
     public ResponseEntity<UsuarioModel> updateUsuario(@PathVariable Long id, @RequestBody UsuarioModel usuario) {
         return ResponseEntity.ok(usuarioService.update(id, usuario));
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation(value = "Excluir um usuário")
     public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) {
         usuarioService.delete(id);
         return ResponseEntity.ok().build();
     }
 }
+
+

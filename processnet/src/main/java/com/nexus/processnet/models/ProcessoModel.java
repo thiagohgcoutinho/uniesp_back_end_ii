@@ -1,17 +1,19 @@
 package com.nexus.processnet.models;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "TB_PROCESSO")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProcessoModel {
 
     @Id
@@ -21,8 +23,8 @@ public class ProcessoModel {
     @Column(nullable = false, unique = true)
     private String numeroProtocolo;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataCriacao;
+    @Column(nullable = false)
+    private String dataCriacao;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -47,4 +49,8 @@ public class ProcessoModel {
     @Column(nullable = false)
     private Parecer parecer = Parecer.AGUARDANDO;
 
+    @PrePersist
+    public void prePersist() {
+        this.dataCriacao = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
 }
