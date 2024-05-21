@@ -47,6 +47,16 @@ public class ProcessoController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{id}/selecionar")
+    public ResponseEntity<?> selectProcesso(@PathVariable Long id, @RequestBody FuncionarioModel funcionario) {
+        try {
+            processoService.selectProcesso(id, funcionario);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/responsavel/{idPessoa}")
     public ResponseEntity<List<ProcessoModel>> getProcessosByResponsavel(@PathVariable Long idPessoa) {
         List<ProcessoModel> processos = processoService.findByResponsavel(idPessoa);

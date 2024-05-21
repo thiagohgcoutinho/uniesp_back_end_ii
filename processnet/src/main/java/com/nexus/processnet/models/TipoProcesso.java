@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum TipoProcesso {
     VISTORIA("Vistoria"),
-    ANALISE("Análise");
+    ANALISE("Analise");
 
     private final String descricao;
 

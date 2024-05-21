@@ -33,7 +33,7 @@ public class FuncionarioController {
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticateFuncionario(@RequestBody LoginModel loginRequest) {
         try {
-            String result = loginService.authenticateUsuario(loginRequest.getCpf(), loginRequest.getSenha());
+            String result = loginService.authenticateFuncionario(loginRequest.getCpf(), loginRequest.getSenha());
             return ResponseEntity.ok(result);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
