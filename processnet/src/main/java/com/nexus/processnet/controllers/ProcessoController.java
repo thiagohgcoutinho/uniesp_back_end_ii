@@ -4,6 +4,7 @@ import com.nexus.processnet.models.*;
 import com.nexus.processnet.services.ProcessoService;
 import com.nexus.processnet.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,9 +32,19 @@ public class ProcessoController {
 
     @PostMapping
     public ResponseEntity<ProcessoModel> createProcesso(@RequestBody ProcessoModel processo) {
-        ProcessoModel novoProcesso = processoService.create(processo);
-        return ResponseEntity.ok(novoProcesso);
+        try {
+            if (processo.getResponsavel() == null || processo.getResponsavel().getIdPessoa() == null) {
+                throw new IllegalArgumentException("Responsável não informado corretamente");
+            }
+            ProcessoModel novoProcesso = processoService.create(processo);
+            return ResponseEntity.ok(novoProcesso);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
+
+
+
 
     @PutMapping("/{id}/status")
     public ResponseEntity<ProcessoModel> updateProcessoStatus(@PathVariable Long id, @RequestParam Status status) {

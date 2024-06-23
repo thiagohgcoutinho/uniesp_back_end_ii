@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -39,7 +41,14 @@ public class PessoaController {
         if (usuarioOpt.isPresent()) {
             UsuarioModel usuario = usuarioOpt.get();
             if (usuario.getSenha().equals(loginRequest.getSenha())) {
-                return ResponseEntity.ok("usuario");
+                Map<String, Object> response = new HashMap<>();
+                response.put("nome", usuario.getNome());
+                response.put("tipo", "usuario");
+                response.put("idPessoa", usuario.getIdPessoa());
+                response.put("telefone", usuario.getTelefone());
+                response.put("email", usuario.getEmail());
+                response.put("cpf", usuario.getCpf());
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha incorreta");
             }
@@ -49,7 +58,15 @@ public class PessoaController {
         if (funcionarioOpt.isPresent()) {
             FuncionarioModel funcionario = funcionarioOpt.get();
             if (funcionario.getSenha().equals(loginRequest.getSenha())) {
-                return ResponseEntity.ok(funcionario.getCargo().name());
+                Map<String, Object> response = new HashMap<>();
+                response.put("nome", funcionario.getNome());
+                response.put("tipo", "funcionario");
+                response.put("cargo", funcionario.getCargo().name());
+                response.put("idPessoa", funcionario.getIdPessoa());
+                response.put("telefone", funcionario.getTelefone());
+                response.put("email", funcionario.getEmail());
+                response.put("cpf", funcionario.getCpf());
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha incorreta");
             }
