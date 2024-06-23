@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UsuarioService extends PessoaService<UsuarioModel> {
 
-    @Autowired
-    private ProcessoRepository processoRepository;
+    private final ProcessoRepository processoRepository;
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, ProcessoRepository processoRepository) {
         super(usuarioRepository);
+        this.processoRepository = processoRepository;
     }
 
     @Transactional

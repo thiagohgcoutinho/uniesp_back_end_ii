@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @Data
-@RequestMapping("/usuarios")
+@RequestMapping("/api/usuarios")
 public class UsuarioController {
 
     @Autowired
@@ -58,5 +58,3 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 }
-
-

@@ -1,17 +1,23 @@
 package com.nexus.processnet.services;
 
 import com.nexus.processnet.models.PessoaModel;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.nexus.processnet.repositories.PessoaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class PessoaService<T extends PessoaModel> {
 
-    protected JpaRepository<T, Long> pessoaRepository;
+    protected PessoaRepository<T> pessoaRepository;
 
-    public PessoaService(JpaRepository<T, Long> pessoaRepository) {
+    public PessoaService(PessoaRepository<T> pessoaRepository) {
         this.pessoaRepository = pessoaRepository;
+    }
+
+    public boolean existsByCpf(String cpf) {
+        return pessoaRepository.existsByCpf(cpf);
     }
 
     @Transactional
@@ -40,4 +46,8 @@ public abstract class PessoaService<T extends PessoaModel> {
         }).orElseThrow(() -> new IllegalArgumentException("Pessoa não localizada com ID: " + id));
     }
 
+    @Transactional
+    public Optional<T> findByCpf(String cpf) {
+        return pessoaRepository.findByCpf(cpf);
+    }
 }
