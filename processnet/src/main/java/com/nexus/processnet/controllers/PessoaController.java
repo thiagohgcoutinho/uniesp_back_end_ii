@@ -5,7 +5,6 @@ import com.nexus.processnet.models.LoginModel;
 import com.nexus.processnet.models.PessoaModel;
 import com.nexus.processnet.models.UsuarioModel;
 import com.nexus.processnet.services.FuncionarioService;
-import com.nexus.processnet.services.PessoaService;
 import com.nexus.processnet.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ import java.util.Optional;
 @RequestMapping("/api/pessoas")
 public class PessoaController {
 
-
     private final UsuarioService usuarioService;
     private final FuncionarioService funcionarioService;
 
@@ -28,7 +26,6 @@ public class PessoaController {
         this.usuarioService = usuarioService;
         this.funcionarioService = funcionarioService;
     }
-
 
     @GetMapping("/verificar-cpf")
     public ResponseEntity<String> verificarCPF(@RequestParam String cpf) {
@@ -48,15 +45,16 @@ public class PessoaController {
             if (pessoa instanceof FuncionarioModel) {
                 Map<String, Object> updatedFuncionario = funcionarioService.update(id, (FuncionarioModel) pessoa);
                 return ResponseEntity.ok(updatedFuncionario);
-            } else {
+            } else if (pessoa instanceof UsuarioModel) {
                 Map<String, Object> updatedUsuario = usuarioService.update(id, (UsuarioModel) pessoa);
                 return ResponseEntity.ok(updatedUsuario);
+            } else {
+                throw new IllegalArgumentException("Tipo desconhecido: " + pessoa.getClass().getName());
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao atualizar perfil.");
         }
     }
-
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody LoginModel loginRequest) {

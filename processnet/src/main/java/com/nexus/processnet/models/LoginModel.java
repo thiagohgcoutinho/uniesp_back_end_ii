@@ -1,6 +1,5 @@
 package com.nexus.processnet.models;
 
-
 import lombok.Data;
 
 @Data

@@ -43,7 +43,7 @@ public class UsuarioService extends PessoaService<UsuarioModel> {
             UsuarioModel updatedUsuario = pessoaRepository.save(existingUsuario);
             Map<String, Object> response = new HashMap<>();
             response.put("nome", updatedUsuario.getNome());
-            response.put("tipo", "Usuario");
+            response.put("tipo", "USUARIO");
             response.put("idPessoa", updatedUsuario.getIdPessoa());
             response.put("telefone", updatedUsuario.getTelefone());
             response.put("email", updatedUsuario.getEmail());

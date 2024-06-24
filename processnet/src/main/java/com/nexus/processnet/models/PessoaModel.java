@@ -1,5 +1,7 @@
 package com.nexus.processnet.models;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -7,6 +9,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "tipo"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = FuncionarioModel.class, name = "Funcionario"),
+        @JsonSubTypes.Type(value = UsuarioModel.class, name = "Usuario")
+})
 
 @Entity
 @Table(name = "TB_PESSOA")
@@ -37,5 +48,4 @@ public abstract class PessoaModel {
 
     @Column(nullable = false, unique = true, length = 11)
     private String telefone;
-
 }
