@@ -1,34 +1,28 @@
 package com.nexus.processnet.controllers;
 
-import com.nexus.processnet.models.LoginModel;
 import com.nexus.processnet.models.UsuarioModel;
+import com.nexus.processnet.models.LoginModel;
 import com.nexus.processnet.services.LoginService;
 import com.nexus.processnet.services.UsuarioService;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@Data
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
+    private final LoginService loginService;
 
     @Autowired
-    private LoginService loginService;
-
-    @GetMapping
-    public ResponseEntity<List<UsuarioModel>> getAllUsuarios() {
-        return ResponseEntity.ok(usuarioService.findAll());
+    public UsuarioController(UsuarioService usuarioService, LoginService loginService) {
+        this.usuarioService = usuarioService;
+        this.loginService = loginService;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioModel> getUsuarioById(@PathVariable Long id) {
+    public ResponseEntity<UsuarioModel> findById(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.findById(id));
     }
 
@@ -48,13 +42,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioModel> updateUsuario(@PathVariable Long id, @RequestBody UsuarioModel usuario) {
+    public ResponseEntity<?> updateUsuario(@PathVariable Long id, @RequestBody UsuarioModel usuario) {
         return ResponseEntity.ok(usuarioService.update(id, usuario));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUsuario(@PathVariable Long id) {
-        usuarioService.delete(id);
-        return ResponseEntity.ok().build();
     }
 }

@@ -28,6 +28,15 @@ public class ProcessoService {
         return processoRepository.save(novoProcesso);
     }
 
+    @Transactional
+    public ProcessoModel update(Long id, ProcessoModel processoAtualizado) {
+        ProcessoModel processoExistente = processoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Processo não encontrado com ID: " + id));
+        processoExistente.setCnpj(processoAtualizado.getCnpj());
+        processoExistente.setEndereco(processoAtualizado.getEndereco());
+        return processoRepository.save(processoExistente);
+    }
+
     private String generateNumeroProtocolo() {
         long count = processoRepository.count();
         int nextNumber = (int) (count + 1);

@@ -2,10 +2,10 @@ package com.nexus.processnet.services;
 
 import com.nexus.processnet.models.PessoaModel;
 import com.nexus.processnet.repositories.PessoaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class PessoaService<T extends PessoaModel> {
@@ -37,14 +37,7 @@ public abstract class PessoaService<T extends PessoaModel> {
     }
 
     @Transactional
-    public T update(Long id, T pessoa) {
-        return pessoaRepository.findById(id).map(existingPessoa -> {
-            if (pessoa.getNome() != null) existingPessoa.setNome(pessoa.getNome());
-            if (pessoa.getTelefone() != null) existingPessoa.setTelefone(pessoa.getTelefone());
-            if (pessoa.getEmail() != null) existingPessoa.setEmail(pessoa.getEmail());
-            return pessoaRepository.save(existingPessoa);
-        }).orElseThrow(() -> new IllegalArgumentException("Pessoa não localizada com ID: " + id));
-    }
+    public abstract Map<String, Object> update(Long id, T pessoa);
 
     @Transactional
     public Optional<T> findByCpf(String cpf) {

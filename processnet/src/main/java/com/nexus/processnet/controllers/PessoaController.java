@@ -2,8 +2,11 @@ package com.nexus.processnet.controllers;
 
 import com.nexus.processnet.models.FuncionarioModel;
 import com.nexus.processnet.models.LoginModel;
+import com.nexus.processnet.models.PessoaModel;
 import com.nexus.processnet.models.UsuarioModel;
+import com.nexus.processnet.services.FuncionarioService;
 import com.nexus.processnet.services.PessoaService;
+import com.nexus.processnet.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +20,15 @@ import java.util.Optional;
 @RequestMapping("/api/pessoas")
 public class PessoaController {
 
-    @Autowired
-    private PessoaService<UsuarioModel> usuarioService;
 
-    @Autowired
-    private PessoaService<FuncionarioModel> funcionarioService;
+    private final UsuarioService usuarioService;
+    private final FuncionarioService funcionarioService;
+
+    public PessoaController(UsuarioService usuarioService, FuncionarioService funcionarioService) {
+        this.usuarioService = usuarioService;
+        this.funcionarioService = funcionarioService;
+    }
+
 
     @GetMapping("/verificar-cpf")
     public ResponseEntity<String> verificarCPF(@RequestParam String cpf) {
@@ -35,6 +42,22 @@ public class PessoaController {
         }
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updatePessoa(@PathVariable Long id, @RequestBody PessoaModel pessoa) {
+        try {
+            if (pessoa instanceof FuncionarioModel) {
+                Map<String, Object> updatedFuncionario = funcionarioService.update(id, (FuncionarioModel) pessoa);
+                return ResponseEntity.ok(updatedFuncionario);
+            } else {
+                Map<String, Object> updatedUsuario = usuarioService.update(id, (UsuarioModel) pessoa);
+                return ResponseEntity.ok(updatedUsuario);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao atualizar perfil.");
+        }
+    }
+
+
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody LoginModel loginRequest) {
         Optional<UsuarioModel> usuarioOpt = usuarioService.findByCpf(loginRequest.getCpf());
@@ -43,7 +66,7 @@ public class PessoaController {
             if (usuario.getSenha().equals(loginRequest.getSenha())) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("nome", usuario.getNome());
-                response.put("tipo", "usuario");
+                response.put("tipo", "Usuario");
                 response.put("idPessoa", usuario.getIdPessoa());
                 response.put("telefone", usuario.getTelefone());
                 response.put("email", usuario.getEmail());
@@ -60,7 +83,7 @@ public class PessoaController {
             if (funcionario.getSenha().equals(loginRequest.getSenha())) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("nome", funcionario.getNome());
-                response.put("tipo", "funcionario");
+                response.put("tipo", "Funcionario");
                 response.put("cargo", funcionario.getCargo().name());
                 response.put("idPessoa", funcionario.getIdPessoa());
                 response.put("telefone", funcionario.getTelefone());

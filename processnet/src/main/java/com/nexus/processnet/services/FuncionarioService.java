@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class FuncionarioService extends PessoaService<FuncionarioModel> {
 
@@ -16,13 +19,22 @@ public class FuncionarioService extends PessoaService<FuncionarioModel> {
 
     @Transactional
     @Override
-    public FuncionarioModel update(Long id, FuncionarioModel funcionario) {
+    public Map<String, Object> update(Long id, FuncionarioModel funcionario) {
         return pessoaRepository.findById(id).map(existingFuncionario -> {
             if (funcionario.getNome() != null) existingFuncionario.setNome(funcionario.getNome());
             if (funcionario.getEmail() != null) existingFuncionario.setEmail(funcionario.getEmail());
             if (funcionario.getTelefone() != null) existingFuncionario.setTelefone(funcionario.getTelefone());
             if (funcionario.getCargo() != null) existingFuncionario.setCargo(funcionario.getCargo());
-            return pessoaRepository.save(existingFuncionario);
+            FuncionarioModel updatedFuncionario = pessoaRepository.save(existingFuncionario);
+            Map<String, Object> response = new HashMap<>();
+            response.put("nome", updatedFuncionario.getNome());
+            response.put("tipo", "Funcionario");
+            response.put("cargo", updatedFuncionario.getCargo().name());
+            response.put("idPessoa", updatedFuncionario.getIdPessoa());
+            response.put("telefone", updatedFuncionario.getTelefone());
+            response.put("email", updatedFuncionario.getEmail());
+            response.put("cpf", updatedFuncionario.getCpf());
+            return response;
         }).orElseThrow(() -> new IllegalArgumentException("Funcionário não localizado com ID: " + id));
     }
 

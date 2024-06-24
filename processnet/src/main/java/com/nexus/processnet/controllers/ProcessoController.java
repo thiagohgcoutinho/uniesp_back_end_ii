@@ -43,8 +43,15 @@ public class ProcessoController {
         }
     }
 
-
-
+    @PutMapping("/{id}")
+    public ResponseEntity<ProcessoModel> updateProcesso(@PathVariable Long id, @RequestBody ProcessoModel processo) {
+        try {
+            ProcessoModel processoAtualizado = processoService.update(id, processo);
+            return ResponseEntity.ok(processoAtualizado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<ProcessoModel> updateProcessoStatus(@PathVariable Long id, @RequestParam Status status) {
