@@ -14,7 +14,11 @@ public interface ProcessoRepository extends JpaRepository<ProcessoModel, Long> {
 
     List<ProcessoModel> findByResponsavel_IdPessoa(Long idPessoa);
 
-    List<ProcessoModel> findByTipoProcesso(TipoProcesso tipo);
+    List<ProcessoModel> findByTipoProcessoAndStatus(TipoProcesso tipo, Status status);
 
     List<ProcessoModel> findByStatus(Status status);
+
+    List<ProcessoModel> findByFuncionario_IdPessoa(Long idPessoa);
+
+    List<ProcessoModel> findByTipoProcesso(TipoProcesso tipoProcesso);
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/processos")
@@ -36,6 +37,11 @@ public class ProcessoController {
             if (processo.getResponsavel() == null || processo.getResponsavel().getIdPessoa() == null) {
                 throw new IllegalArgumentException("Responsável não informado corretamente");
             }
+            UsuarioModel responsavel = usuarioService.findById(processo.getResponsavel().getIdPessoa());
+            if (responsavel == null) {
+                throw new IllegalArgumentException("Usuário responsável não encontrado");
+            }
+            processo.setResponsavel(responsavel);
             ProcessoModel novoProcesso = processoService.create(processo);
             return ResponseEntity.ok(novoProcesso);
         } catch (Exception e) {
@@ -60,18 +66,42 @@ public class ProcessoController {
     }
 
     @PutMapping("/{id}/parecer")
-    public ResponseEntity<ProcessoModel> updateProcessoParecer(@PathVariable Long id, @RequestParam Parecer parecer) {
-        processoService.updateParecer(id, parecer);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateProcessoParecer(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        try {
+            Parecer parecer = Parecer.valueOf(payload.get("parecer").toUpperCase());
+            processoService.updateParecer(id, parecer);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}/selecionar")
-    public ResponseEntity<?> selectProcesso(@PathVariable Long id, @RequestBody FuncionarioModel funcionario) {
+    public ResponseEntity<?> selectProcesso(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
         try {
+            Long idPessoa = ((Number) payload.get("idPessoa")).longValue();
+            Cargo cargo = Cargo.valueOf((String) payload.get("cargo"));
+
+            FuncionarioModel funcionario = new FuncionarioModel();
+            funcionario.setIdPessoa(idPessoa);
+            funcionario.setCargo(cargo);
+
             processoService.selectProcesso(id, funcionario);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProcesso(@PathVariable Long id) {
+        try {
+            processoService.delete(id);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

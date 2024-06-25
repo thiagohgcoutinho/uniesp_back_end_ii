@@ -17,7 +17,8 @@ import java.time.format.DateTimeFormatter;
 public class ProcessoModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "processo_generator")
+    @SequenceGenerator(name = "processo_generator", sequenceName = "processo_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -40,6 +41,10 @@ public class ProcessoModel {
     @ManyToOne
     @JoinColumn(name = "idResponsavel", referencedColumnName = "idPessoa")
     private UsuarioModel responsavel;
+
+    @ManyToOne
+    @JoinColumn(name = "idFuncionario", referencedColumnName = "idPessoa")
+    private FuncionarioModel funcionario;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

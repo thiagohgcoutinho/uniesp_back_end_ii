@@ -1,5 +1,7 @@
 package com.nexus.processnet.controllers;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.nexus.processnet.models.FuncionarioModel;
 import com.nexus.processnet.models.LoginModel;
 import com.nexus.processnet.models.PessoaModel;
@@ -17,14 +19,39 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/pessoas")
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "tipo"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = UsuarioModel.class, name = "Usuario"),
+        @JsonSubTypes.Type(value = FuncionarioModel.class, name = "Funcionario")
+})
 public class PessoaController {
 
     private final UsuarioService usuarioService;
     private final FuncionarioService funcionarioService;
 
+    @Autowired
     public PessoaController(UsuarioService usuarioService, FuncionarioService funcionarioService) {
         this.usuarioService = usuarioService;
         this.funcionarioService = funcionarioService;
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updatePessoa(@PathVariable Long id, @RequestBody PessoaModel pessoa) {
+        try {
+            if (pessoa instanceof UsuarioModel) {
+                return ResponseEntity.ok(usuarioService.update(id, (UsuarioModel) pessoa));
+            } else if (pessoa instanceof FuncionarioModel) {
+                return ResponseEntity.ok(funcionarioService.update(id, (FuncionarioModel) pessoa));
+            } else {
+                throw new IllegalArgumentException("Tipo de pessoa desconhecido");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao atualizar pessoa: " + e.getMessage());
+        }
     }
 
     @GetMapping("/verificar-cpf")
@@ -36,23 +63,6 @@ public class PessoaController {
             return ResponseEntity.ok("CPF já cadastrado");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CPF não cadastrado");
-        }
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updatePessoa(@PathVariable Long id, @RequestBody PessoaModel pessoa) {
-        try {
-            if (pessoa instanceof FuncionarioModel) {
-                Map<String, Object> updatedFuncionario = funcionarioService.update(id, (FuncionarioModel) pessoa);
-                return ResponseEntity.ok(updatedFuncionario);
-            } else if (pessoa instanceof UsuarioModel) {
-                Map<String, Object> updatedUsuario = usuarioService.update(id, (UsuarioModel) pessoa);
-                return ResponseEntity.ok(updatedUsuario);
-            } else {
-                throw new IllegalArgumentException("Tipo desconhecido: " + pessoa.getClass().getName());
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao atualizar perfil.");
         }
     }
 

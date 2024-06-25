@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public abstract class PessoaService<T extends PessoaModel> {
 
-    protected PessoaRepository<T> pessoaRepository;
+    protected final PessoaRepository<T> pessoaRepository;
 
     public PessoaService(PessoaRepository<T> pessoaRepository) {
         this.pessoaRepository = pessoaRepository;
@@ -21,17 +21,17 @@ public abstract class PessoaService<T extends PessoaModel> {
     }
 
     @Transactional
-    public T create(T pessoa){
+    public T create(T pessoa) {
         return pessoaRepository.save(pessoa);
     }
 
     @Transactional
-    public List<T> findAll(){
+    public List<T> findAll() {
         return pessoaRepository.findAll();
     }
 
     @Transactional
-    public T findById(Long id){
+    public T findById(Long id) {
         return pessoaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Pessoa não encontrada com ID: " + id));
     }

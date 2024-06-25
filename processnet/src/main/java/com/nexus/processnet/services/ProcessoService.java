@@ -37,6 +37,16 @@ public class ProcessoService {
         return processoRepository.save(processoExistente);
     }
 
+    @Transactional
+    public void delete(Long id) {
+        ProcessoModel processo = processoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Processo não encontrado com ID: " + id));
+        if (processo.getStatus() == Status.CONCLUIDO) {
+            throw new IllegalArgumentException("Não é possível excluir processos concluídos.");
+        }
+        processoRepository.deleteById(id);
+    }
+
     private String generateNumeroProtocolo() {
         long count = processoRepository.count();
         int nextNumber = (int) (count + 1);
@@ -81,9 +91,17 @@ public class ProcessoService {
         ProcessoModel processo = processoRepository.findById(idProcesso)
                 .orElseThrow(() -> new IllegalArgumentException("Processo não encontrado com ID: " + idProcesso));
 
-        if (processo.getStatus() == Status.AGUARDANDO && (funcionario.getCargo() == Cargo.VISTORIADOR || funcionario.getCargo() == Cargo.ANALISTA)) {
-            processo.setStatus(Status.EM_ANALISE);
-            processoRepository.save(processo);
+        if (processo.getStatus() == Status.AGUARDANDO) {
+            if ((funcionario.getCargo() == Cargo.VISTORIADOR && processo.getTipoProcesso() == TipoProcesso.VISTORIA) ||
+                    (funcionario.getCargo() == Cargo.ANALISTA && processo.getTipoProcesso() == TipoProcesso.ANALISE)) {
+                processo.setStatus(Status.EM_ANALISE);
+                processo.setFuncionario(funcionario); // Atribui o funcionário ao processo
+                processoRepository.save(processo);
+            } else {
+                throw new IllegalArgumentException("Cargo do funcionário não corresponde ao tipo de processo.");
+            }
+        } else {
+            throw new IllegalArgumentException("Processo não está em status AGUARDANDO.");
         }
     }
 

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
@@ -28,7 +30,8 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<UsuarioModel> createUsuario(@RequestBody UsuarioModel usuario) {
-        return ResponseEntity.ok(usuarioService.create(usuario));
+        UsuarioModel novoUsuario = usuarioService.create(usuario);
+        return ResponseEntity.ok(novoUsuario);
     }
 
     @PostMapping("/authenticate")
@@ -42,7 +45,8 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUsuario(@PathVariable Long id, @RequestBody UsuarioModel usuario) {
-        return ResponseEntity.ok(usuarioService.update(id, usuario));
+    public ResponseEntity<Map<String, Object>> updateUsuario(@PathVariable Long id, @RequestBody UsuarioModel usuario) {
+        Map<String, Object> updatedUsuario = usuarioService.update(id, usuario);
+        return ResponseEntity.ok(updatedUsuario);
     }
 }
