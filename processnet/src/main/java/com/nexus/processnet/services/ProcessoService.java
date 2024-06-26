@@ -51,7 +51,7 @@ public class ProcessoService {
         long count = processoRepository.count();
         int nextNumber = (int) (count + 1);
         int year = LocalDate.now().getYear();
-        return String.format("%03d%d", nextNumber, year);
+        return String.format("%03d%04d", nextNumber, year); // 3 dígitos para o número sequencial e 4 dígitos para o ano
     }
 
     @Transactional
@@ -104,6 +104,12 @@ public class ProcessoService {
             throw new IllegalArgumentException("Processo não está em status AGUARDANDO.");
         }
     }
+
+    @Transactional
+    public List<ProcessoModel> findByFuncionario(Long idPessoa) {
+        return processoRepository.findByFuncionario_IdPessoa(idPessoa);
+    }
+
 
     @Transactional
     public List<ProcessoModel> findAll() {

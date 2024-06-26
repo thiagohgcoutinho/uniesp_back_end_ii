@@ -5,9 +5,11 @@ import com.nexus.processnet.models.LoginModel;
 import com.nexus.processnet.services.LoginService;
 import com.nexus.processnet.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,6 +28,11 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioModel> findById(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UsuarioModel>> findAll() {
+        return ResponseEntity.ok(usuarioService.findAll());
     }
 
     @PostMapping
@@ -48,5 +55,15 @@ public class UsuarioController {
     public ResponseEntity<Map<String, Object>> updateUsuario(@PathVariable Long id, @RequestBody UsuarioModel usuario) {
         Map<String, Object> updatedUsuario = usuarioService.update(id, usuario);
         return ResponseEntity.ok(updatedUsuario);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUsuario(@PathVariable Long id) {
+        try {
+            usuarioService.delete(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

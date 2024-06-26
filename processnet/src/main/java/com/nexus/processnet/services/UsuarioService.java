@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -51,5 +52,10 @@ public class UsuarioService extends PessoaService<UsuarioModel> {
             response.put("cpf", updatedUsuario.getCpf());
             return response;
         }).orElseThrow(() -> new IllegalArgumentException("Usuário não localizado com ID: " + id));
+    }
+
+    @Transactional
+    public List<UsuarioModel> findAll() {
+        return pessoaRepository.findAll();
     }
 }

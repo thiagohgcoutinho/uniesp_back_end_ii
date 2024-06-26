@@ -44,8 +44,10 @@ public class ProcessoController {
             processo.setResponsavel(responsavel);
             ProcessoModel novoProcesso = processoService.create(processo);
             return ResponseEntity.ok(novoProcesso);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -60,9 +62,14 @@ public class ProcessoController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<ProcessoModel> updateProcessoStatus(@PathVariable Long id, @RequestParam Status status) {
-        processoService.updateStatus(id, status);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateProcessoStatus(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        try {
+            Status status = Status.valueOf(payload.get("status").toUpperCase());
+            processoService.updateStatus(id, status);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}/parecer")
@@ -103,6 +110,12 @@ public class ProcessoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/funcionario/{idPessoa}")
+    public ResponseEntity<List<ProcessoModel>> getProcessosByFuncionario(@PathVariable Long idPessoa) {
+        List<ProcessoModel> processos = processoService.findByFuncionario(idPessoa);
+        return ResponseEntity.ok(processos);
     }
 
     @GetMapping("/responsavel/{idPessoa}")

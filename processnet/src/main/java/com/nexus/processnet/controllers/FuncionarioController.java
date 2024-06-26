@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,6 +18,12 @@ public class FuncionarioController {
     @Autowired
     public FuncionarioController(FuncionarioService funcionarioService) {
         this.funcionarioService = funcionarioService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FuncionarioModel>> findAll() {
+        List<FuncionarioModel> funcionarios = funcionarioService.findAll();
+        return ResponseEntity.ok(funcionarios);
     }
 
     @GetMapping("/{id}")
@@ -34,5 +41,11 @@ public class FuncionarioController {
     public ResponseEntity<Map<String, Object>> updateFuncionario(@PathVariable Long id, @RequestBody FuncionarioModel funcionario) {
         Map<String, Object> updatedFuncionario = funcionarioService.update(id, funcionario);
         return ResponseEntity.ok(updatedFuncionario);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFuncionario(@PathVariable Long id) {
+        funcionarioService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

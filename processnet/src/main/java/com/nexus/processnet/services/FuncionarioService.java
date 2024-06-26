@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,6 +20,11 @@ public class FuncionarioService extends PessoaService<FuncionarioModel> {
     public FuncionarioService(FuncionarioRepository funcionarioRepository) {
         super(funcionarioRepository);
         this.funcionarioRepository = funcionarioRepository;
+    }
+
+    @Transactional
+    public List<FuncionarioModel> findAll() {
+        return funcionarioRepository.findAll();
     }
 
     @Transactional
